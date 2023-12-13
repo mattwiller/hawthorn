@@ -1,0 +1,522 @@
+{
+  "resourceType": "CodeSystem",
+  "url": "http://snomed.info/sct",
+  "identifier": [
+    {
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:oid:2.16.840.1.113883.6.96"
+    }
+  ],
+  "name": "SNOMEDCT_US",
+  "title": "SNOMED CT (US Edition)",
+  "status": "active",
+  "experimental": false,
+  "publisher": "IHTSDO",
+  "contact": [
+    {
+      "telecom": [
+        {
+          "system": "url",
+          "value": "http://ihtsdo.org"
+        }
+      ]
+    }
+  ],
+  "description": "SNOMED CT is the most comprehensive and precise clinical health terminology product in the world, owned and distributed around the world by The International Health Terminology Standards Development Organisation (IHTSDO).",
+  "copyright": "© 2002-2023 International Health Terminology Standards Development Organisation (IHTSDO). All rights reserved. SNOMED CT®, was originally created by The College of American Pathologists. \"SNOMED\" and \"SNOMED CT\" are registered trademarks of the IHTSDO http://www.ihtsdo.org/snomed-ct/get-snomed-ct",
+  "caseSensitive": false,
+  "hierarchyMeaning": "is-a",
+  "compositional": true,
+  "versionNeeded": false,
+  "content": "not-present",
+  "filter": [
+    {
+      "code": "concept",
+      "description": "Filter that includes concepts based on their logical definition. e.g. [concept] [is-a] [x] - include all concepts with an is-a relationship to concept x, or [concept] [in] [x]- include all concepts in the reference set identified by concept x",
+      "operator": ["is-a", "in"],
+      "value": "A SNOMED CT code"
+    }
+  ],
+  "property": [
+    {
+      "code": "parent",
+      "uri": "http://hl7.org/fhir/concept-properties#parent",
+      "description": "A SNOMED CT concept id that has the target of a direct is-a relationship from the concept",
+      "type": "code"
+    },
+    {
+      "code": "child",
+      "uri": "http://hl7.org/fhir/concept-properties#child",
+      "description": "A SNOMED CT concept id that has a direct is-a relationship to the concept",
+      "type": "code"
+    },
+    {
+      "code": "moduleId",
+      "uri": "http://snomed.info/field/Concept.moduleId",
+      "description": "The SNOMED CT concept id of the module that the concept belongs to.",
+      "type": "code"
+    },
+    {
+      "code": "42752001",
+      "description": "Due to",
+      "uri": "http://snomed.info/id/42752001",
+      "type": "code"
+    },
+    {
+      "code": "47429007",
+      "description": "Associated with",
+      "uri": "http://snomed.info/id/47429007",
+      "type": "code"
+    },
+    {
+      "code": "116676008",
+      "description": "Associated morphology",
+      "uri": "http://snomed.info/id/116676008",
+      "type": "code"
+    },
+    {
+      "code": "116686009",
+      "description": "Has specimen",
+      "uri": "http://snomed.info/id/116686009",
+      "type": "code"
+    },
+    {
+      "code": "118168003",
+      "description": "Specimen source morphology",
+      "uri": "http://snomed.info/id/118168003",
+      "type": "code"
+    },
+    {
+      "code": "118169006",
+      "description": "Specimen source topography",
+      "uri": "http://snomed.info/id/118169006",
+      "type": "code"
+    },
+    {
+      "code": "118170007",
+      "description": "Specimen source identity",
+      "uri": "http://snomed.info/id/118170007",
+      "type": "code"
+    },
+    {
+      "code": "118171006",
+      "description": "Specimen procedure",
+      "uri": "http://snomed.info/id/118171006",
+      "type": "code"
+    },
+    {
+      "code": "123005000",
+      "description": "Part of",
+      "uri": "http://snomed.info/id/123005000",
+      "type": "code"
+    },
+    {
+      "code": "127489000",
+      "description": "Has active ingredient",
+      "uri": "http://snomed.info/id/127489000",
+      "type": "code"
+    },
+    {
+      "code": "131195008",
+      "description": "Subject of information",
+      "uri": "http://snomed.info/id/131195008",
+      "type": "code"
+    },
+    {
+      "code": "246075003",
+      "description": "Causative agent",
+      "uri": "http://snomed.info/id/246075003",
+      "type": "code"
+    },
+    {
+      "code": "246090004",
+      "description": "Associated finding",
+      "uri": "http://snomed.info/id/246090004",
+      "type": "code"
+    },
+    {
+      "code": "246093002",
+      "description": "Component",
+      "uri": "http://snomed.info/id/246093002",
+      "type": "code"
+    },
+    {
+      "code": "246112005",
+      "description": "Severity",
+      "uri": "http://snomed.info/id/246112005",
+      "type": "code"
+    },
+    {
+      "code": "246454002",
+      "description": "Occurrence",
+      "uri": "http://snomed.info/id/246454002",
+      "type": "code"
+    },
+    {
+      "code": "246456000",
+      "description": "Episodicity",
+      "uri": "http://snomed.info/id/246456000",
+      "type": "code"
+    },
+    {
+      "code": "246501002",
+      "description": "Technique",
+      "uri": "http://snomed.info/id/246501002",
+      "type": "code"
+    },
+    {
+      "code": "246513007",
+      "description": "Revision status",
+      "uri": "http://snomed.info/id/246513007",
+      "type": "code"
+    },
+    {
+      "code": "246514001",
+      "description": "Units",
+      "uri": "http://snomed.info/id/246514001",
+      "type": "code"
+    },
+    {
+      "code": "255234002",
+      "description": "After",
+      "uri": "http://snomed.info/id/255234002",
+      "type": "code"
+    },
+    {
+      "code": "260507000",
+      "description": "Access",
+      "uri": "http://snomed.info/id/260507000",
+      "type": "code"
+    },
+    {
+      "code": "260686004",
+      "description": "Method",
+      "uri": "http://snomed.info/id/260686004",
+      "type": "code"
+    },
+    {
+      "code": "260870009",
+      "description": "Priority",
+      "uri": "http://snomed.info/id/260870009",
+      "type": "code"
+    },
+    {
+      "code": "260870009",
+      "description": "Clinical course",
+      "uri": "http://snomed.info/id/263502005",
+      "type": "code"
+    },
+    {
+      "code": "272741003",
+      "description": "Laterality",
+      "uri": "http://snomed.info/id/272741003",
+      "type": "code"
+    },
+    {
+      "code": "363589002",
+      "description": "Associated procedure",
+      "uri": "http://snomed.info/id/363589002",
+      "type": "code"
+    },
+    {
+      "code": "363698007",
+      "description": "Finding site",
+      "uri": "http://snomed.info/id/363698007",
+      "type": "code"
+    },
+    {
+      "code": "363699004",
+      "description": "Laterality",
+      "uri": "http://snomed.info/id/363699004",
+      "type": "code"
+    },
+    {
+      "code": "363700003",
+      "description": "Direct morphology",
+      "uri": "http://snomed.info/id/363700003",
+      "type": "code"
+    },
+    {
+      "code": "363701004",
+      "description": "Direct substance",
+      "uri": "http://snomed.info/id/363701004",
+      "type": "code"
+    },
+    {
+      "code": "363702006",
+      "description": "Has focus",
+      "uri": "http://snomed.info/id/363702006",
+      "type": "code"
+    },
+    {
+      "code": "363703001",
+      "description": "Has intent",
+      "uri": "http://snomed.info/id/363703001",
+      "type": "code"
+    },
+    {
+      "code": "363704007",
+      "description": "Procedure site",
+      "uri": "http://snomed.info/id/363704007",
+      "type": "code"
+    },
+    {
+      "code": "363705008",
+      "description": "Has definitional manifestation",
+      "uri": "http://snomed.info/id/363705008",
+      "type": "code"
+    },
+    {
+      "code": "363709002",
+      "description": "Indirect morphology",
+      "uri": "http://snomed.info/id/363709002",
+      "type": "code"
+    },
+    {
+      "code": "363710007",
+      "description": "Indirect device",
+      "uri": "http://snomed.info/id/363710007",
+      "type": "code"
+    },
+    {
+      "code": "363713009",
+      "description": "Has interpretation",
+      "uri": "http://snomed.info/id/363713009",
+      "type": "code"
+    },
+    {
+      "code": "363714003",
+      "description": "Interprets",
+      "uri": "http://snomed.info/id/363714003",
+      "type": "code"
+    },
+    {
+      "code": "370129005",
+      "description": "Measurement method",
+      "uri": "http://snomed.info/id/370129005",
+      "type": "code"
+    },
+    {
+      "code": "370130000",
+      "description": "Property",
+      "uri": "http://snomed.info/id/370130000",
+      "type": "code"
+    },
+    {
+      "code": "370131001",
+      "description": "Recipient category",
+      "uri": "http://snomed.info/id/370131001",
+      "type": "code"
+    },
+    {
+      "code": "370132008",
+      "description": "Scale type",
+      "uri": "http://snomed.info/id/370132008",
+      "type": "code"
+    },
+    {
+      "code": "370133003",
+      "description": "Specimen substance",
+      "uri": "http://snomed.info/id/370133003",
+      "type": "code"
+    },
+    {
+      "code": "370134009",
+      "description": "Time aspect",
+      "uri": "http://snomed.info/id/370134009",
+      "type": "code"
+    },
+    {
+      "code": "370135005",
+      "description": "Pathological process",
+      "uri": "http://snomed.info/id/370135005",
+      "type": "code"
+    },
+    {
+      "code": "405813007",
+      "description": "Procedure site - Direct",
+      "uri": "http://snomed.info/id/405813007",
+      "type": "code"
+    },
+    {
+      "code": "405814001",
+      "description": "Procedure site - Indirect",
+      "uri": "http://snomed.info/id/405814001",
+      "type": "code"
+    },
+    {
+      "code": "405815000",
+      "description": "Procedure device",
+      "uri": "http://snomed.info/id/405815000",
+      "type": "code"
+    },
+    {
+      "code": "405816004",
+      "description": "Procedure morphology",
+      "uri": "http://snomed.info/id/405816004",
+      "type": "code"
+    },
+    {
+      "code": "408729009",
+      "description": "Finding context",
+      "uri": "http://snomed.info/id/408729009",
+      "type": "code"
+    },
+    {
+      "code": "408730004",
+      "description": "Procedure context",
+      "uri": "http://snomed.info/id/408730004",
+      "type": "code"
+    },
+    {
+      "code": "408731000",
+      "description": "Temporal context",
+      "uri": "http://snomed.info/id/408731000",
+      "type": "code"
+    },
+    {
+      "code": "408732007",
+      "description": "Subject relationship context",
+      "uri": "http://snomed.info/id/408732007",
+      "type": "code"
+    },
+    {
+      "code": "410675002",
+      "description": "Route of administration",
+      "uri": "http://snomed.info/id/410675002",
+      "type": "code"
+    },
+    {
+      "code": "411116001",
+      "description": "Has dose form",
+      "uri": "http://snomed.info/id/411116001",
+      "type": "code"
+    },
+    {
+      "code": "418775008",
+      "description": "Finding method",
+      "uri": "http://snomed.info/id/418775008",
+      "type": "code"
+    },
+    {
+      "code": "419066007",
+      "description": "Finding informer",
+      "uri": "http://snomed.info/id/419066007",
+      "type": "code"
+    },
+    {
+      "code": "424226004",
+      "description": "Using device",
+      "uri": "http://snomed.info/id/424226004",
+      "type": "code"
+    },
+    {
+      "code": "424244007",
+      "description": "Using energy",
+      "uri": "http://snomed.info/id/424244007",
+      "type": "code"
+    },
+    {
+      "code": "424361007",
+      "description": "Using substance",
+      "uri": "http://snomed.info/id/424361007",
+      "type": "code"
+    },
+    {
+      "code": "424876005",
+      "description": "Surgical approach",
+      "uri": "http://snomed.info/id/424876005",
+      "type": "code"
+    },
+    {
+      "code": "425391005",
+      "description": "Using access device",
+      "uri": "http://snomed.info/id/425391005",
+      "type": "code"
+    },
+    {
+      "code": "609096000",
+      "description": "Role group",
+      "uri": "http://snomed.info/id/609096000",
+      "type": "code"
+    },
+    {
+      "code": "704318007",
+      "description": "Property type",
+      "uri": "http://snomed.info/id/704318007",
+      "type": "code"
+    },
+    {
+      "code": "704319004",
+      "description": "Inheres in",
+      "uri": "http://snomed.info/id/704319004",
+      "type": "code"
+    },
+    {
+      "code": "704320005",
+      "description": "Towards",
+      "uri": "http://snomed.info/id/704320005",
+      "type": "code"
+    },
+    {
+      "code": "704321009",
+      "description": "Characterizes",
+      "uri": "http://snomed.info/id/704321009",
+      "type": "code"
+    },
+    {
+      "code": "704322002",
+      "description": "Process agent",
+      "uri": "http://snomed.info/id/704322002",
+      "type": "code"
+    },
+    {
+      "code": "704323007",
+      "description": "Process duration",
+      "uri": "http://snomed.info/id/704323007",
+      "type": "code"
+    },
+    {
+      "code": "704324001",
+      "description": "Process output",
+      "uri": "http://snomed.info/id/704324001",
+      "type": "code"
+    },
+    {
+      "code": "704325000",
+      "description": "Relative to",
+      "uri": "http://snomed.info/id/704325000",
+      "type": "code"
+    },
+    {
+      "code": "704326004",
+      "description": "Precondition",
+      "uri": "http://snomed.info/id/704326004",
+      "type": "code"
+    },
+    {
+      "code": "704327008",
+      "description": "Direct site",
+      "uri": "http://snomed.info/id/704327008",
+      "type": "code"
+    },
+    {
+      "code": "704346009",
+      "description": "Specified by",
+      "uri": "http://snomed.info/id/704346009",
+      "type": "code"
+    },
+    {
+      "code": "704347000",
+      "description": "Observes",
+      "uri": "http://snomed.info/id/704347000",
+      "type": "code"
+    },
+    {
+      "code": "704647008",
+      "description": "Is about",
+      "uri": "http://snomed.info/id/704647008",
+      "type": "code"
+    }
+  ]
+}

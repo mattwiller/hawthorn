@@ -1,0 +1,45 @@
+{
+  "resourceType": "CodeSystem",
+  "url": "http://hl7.org/fhir/sid/cvx",
+  "identifier": [
+    {
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:oid:2.16.840.1.113883.12.292"
+    }
+  ],
+  "version": "20230816",
+  "name": "CVX",
+  "title": "Clinical Vaccine Names",
+  "status": "active",
+  "experimental": false,
+  "date": "2023-08-01T00:00:00-04:00",
+  "publisher": "CDC, National Center for Immunization and Respiratory Diseases Immunization Information System Support Branch - Informatics",
+  "content": "not-present",
+  "property": [
+    {
+      "code": "NDC",
+      "description": "National Drug Code corresponding to a clinical drug (e.g. 000023082503)",
+      "type": "code"
+    },
+    {
+      "code": "VACCINE_STATUS",
+      "description": "Vaccine status. CVX codes for inactive vaccines allow transmission of historical immunization records.",
+      "type": "string"
+    },
+    {
+      "code": "NON_VACCINE",
+      "description": "Non Vaccine",
+      "type": "boolean"
+    },
+    {
+      "code": "DATE_LAST_MODIFIED",
+      "description": "Date last modified",
+      "type": "dateTime"
+    },
+    {
+      "code": "SOS",
+      "description": "Scope Statement",
+      "type": "string"
+    }
+  ]
+}

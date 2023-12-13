@@ -1,0 +1,61 @@
+{
+  "resourceType": "CodeSystem",
+  "url": "http://www.ama-assn.org/go/cpt",
+  "identifier": [
+    {
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:oid:2.16.840.1.113883.6.12"
+    }
+  ],
+  "version": "2023",
+  "name": "CPT",
+  "title": "Current Procedural Terminology",
+  "status": "active",
+  "experimental": false,
+  "date": "2022-10-01T00:00:00-04:00",
+  "publisher": "American Medical Association",
+  "copyright": "CPT copyright 2014 American Medical Association. All rights reserved.",
+  "content": "not-present",
+  "property": [
+    {
+      "code": "CITATION",
+      "description": "Citation",
+      "type": "string"
+    },
+    {
+      "code": "ADDITIONAL_GUIDELINE",
+      "description": "Additional explanatory text that is applicable to a concept (code/heading/subheading).",
+      "type": "string"
+    },
+    {
+      "code": "SPECIALTY",
+      "description": "Specialty",
+      "type": "string"
+    },
+    {
+      "code": "CPT_LEVEL",
+      "description": "For headings, a value ranging from H1 (a top-level heading such as Surgery) to H6 (a 6th-level subheading) and HS (a heading for a small family of related codes). For CPT codes, either PC for Parent Code or CC for Child Code.",
+      "type": "code"
+    },
+    {
+      "code": "REPORTABLE",
+      "description": "Indicates whether a code is reportable",
+      "type": "boolean"
+    },
+    {
+      "code": "CPTLINK_CONCEPT_ID",
+      "description": "CPT Link concept identifier",
+      "type": "code"
+    },
+    {
+      "code": "DATE_CREATED",
+      "description": "Date created",
+      "type": "string"
+    },
+    {
+      "code": "GUIDELINE",
+      "description": "Guideline",
+      "type": "string"
+    }
+  ]
+}

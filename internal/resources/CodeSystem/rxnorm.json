@@ -1,0 +1,50 @@
+{
+  "resourceType": "CodeSystem",
+  "url": "http://www.nlm.nih.gov/research/umls/rxnorm",
+  "identifier": [
+    {
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:oid:2.16.840.1.113883.6.88"
+    }
+  ],
+  "version": "09052023",
+  "name": "RXNORM",
+  "title": "RxNorm Vocabulary",
+  "status": "active",
+  "experimental": false,
+  "date": "2023-09-01T00:00:00-04:00",
+  "publisher": "U.S. National Library of Medicine",
+  "content": "not-present",
+  "property": [
+    {
+      "code": "NDC",
+      "description": "National Drug Code corresponding to a clinical drug (e.g. 000023082503)",
+      "type": "code"
+    },
+    {
+      "code": "RXN_AVAILABLE_STRENGTH",
+      "description": "Available drug strengths listed in the order of ingredients from the drug",
+      "type": "string"
+    },
+    {
+      "code": "RXTERM_FORM",
+      "description": "National Drug Code corresponding to a clinical drug (e.g. 000023082503)",
+      "type": "string"
+    },
+    {
+      "code": "RXN_HUMAN_DRUG",
+      "description": "Drug available for use in Humans",
+      "type": "code"
+    },
+    {
+      "code": "RXN_QUANTITY",
+      "description": "Normal Form quantity factor",
+      "type": "string"
+    },
+    {
+      "code": "RXN_QUALITATIVE_DISTINCTION",
+      "description": "RXN Qualitative Distinction",
+      "type": "string"
+    }
+  ]
+}
