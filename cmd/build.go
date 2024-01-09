@@ -27,7 +27,18 @@ var setup = []string{
 		display		TEXT
 	)`,
 	`CREATE UNIQUE INDEX IF NOT EXISTS "Coding_system_code_idx" ON "Coding" (system, code)`,
-	`CREATE VIRTUAL TABLE IF NOT EXISTS "Coding" USING fts5(display, tokenize = 'porter')`,
+	`CREATE VIRTUAL TABLE IF NOT EXISTS "Coding_fts_idx" USING fts5(display, tokenize = 'porter', content='Coding', content_rowid='id')`,
+	// Triggers to keep the FTS index up to date.
+	`CREATE TRIGGER "Coding_postinsert" AFTER INSERT ON "Coding" BEGIN
+		INSERT INTO "Coding_fts_idx" (rowid, display) VALUES (new.id, new.display);
+	END`,
+	`CREATE TRIGGER "Coding_postdelete" AFTER DELETE ON "Coding" BEGIN
+		INSERT INTO "Coding_fts_idx" ("Coding_fts_idx", rowid, display) VALUES ('delete', old.id, old.display);
+	END`,
+	`CREATE TRIGGER "Coding_postupdate" AFTER UPDATE ON "Coding" BEGIN
+		INSERT INTO "Coding_fts_idx" ("Coding_fts_idx", rowid, display) VALUES ('delete', old.id, old.display);
+		INSERT INTO "Coding_fts_idx" (rowid, display) VALUES (new.id, new.display);
+	END`,
 
 	`CREATE TABLE IF NOT EXISTS "CodeSystem_Property" (
 		id			INTEGER	PRIMARY KEY AUTOINCREMENT,

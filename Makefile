@@ -1,4 +1,4 @@
-.PHONY: build clean
+.PHONY: build clean run test
 
 # ===== Component files =====
 
@@ -11,7 +11,13 @@ umls-2023AB-full.zip:
 # ===== Commands =====
 
 build: umls.db
+	go build
 
 clean:
-	rm umls.db*
+	rm -f umls.db*
 
+run: umls.db
+	go run main.go
+
+test: umls.db
+	go test -bench=. -benchmem ./...

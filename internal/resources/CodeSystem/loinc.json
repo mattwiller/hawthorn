@@ -62,43 +62,43 @@
       "code": "COMPONENT",
       "uri": "http://loinc.org/property/COMPONENT",
       "description": "First major axis-component or analyte: Analyte Name, Analyte sub-class, Challenge",
-      "type": "Coding"
+      "type": "string"
     },
     {
       "code": "PROPERTY",
       "uri": "http://loinc.org/property/PROPERTY",
       "description": "Second major axis-property observed: Kind of Property (also called kind of quantity)",
-      "type": "Coding"
+      "type": "string"
     },
     {
       "code": "TIME_ASPCT",
       "uri": "http://loinc.org/property/TIME_ASPCT",
       "description": "Third major axis-timing of the measurement: Time Aspect (Point or moment in time vs. time interval)",
-      "type": "Coding"
+      "type": "string"
     },
     {
       "code": "SYSTEM",
       "uri": "http://loinc.org/property/SYSTEM",
       "description": "Fourth major axis-type of specimen or system: System (Sample) Type",
-      "type": "Coding"
+      "type": "string"
     },
     {
       "code": "SCALE_TYP",
       "uri": "http://loinc.org/property/SCALE_TYP",
       "description": "Fifth major axis-scale of measurement: Type of Scale",
-      "type": "Coding"
+      "type": "string"
     },
     {
       "code": "METHOD_TYP",
       "uri": "http://loinc.org/property/METHOD_TYP",
       "description": "Sixth major axis-method of measurement: Type of Method",
-      "type": "Coding"
+      "type": "string"
     },
     {
       "code": "CLASS",
       "uri": "http://loinc.org/property/CLASS",
       "description": "An arbitrary classification of terms for grouping related observations together",
-      "type": "Coding"
+      "type": "string"
     },
     {
       "code": "CHNG_TYPE",
@@ -248,7 +248,7 @@
       "code": "MAP_TO",
       "uri": "http://loinc.org/property/MAP_TO",
       "description": "A replacement term that is to be used in place of the deprecated or discouraged term.",
-      "type": "Coding"
+      "type": "string"
     }
   ]
 }
