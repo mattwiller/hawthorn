@@ -39,7 +39,7 @@ for more details.
 <details>
 <summary>
 
-**tl;dr** Sustained load of 6,000 code lookups per second, with p99 latency under 0.5 ms and p99.99 latency under 5 ms
+**tl;dr** Served over 6,000 code lookups per second, with p99 latency under 0.5 ms and p99.99 latency under 5 ms
 
 </summary>
 
