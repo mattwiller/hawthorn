@@ -1,4 +1,4 @@
-# Hawthorn - Self-contained terminology service seed pack
+# Hawthorn - Self-contained seed terminology service
 
 Hawthorn contains everything required to set up a tiny, self-contained FHIR® terminology service. Currently, the
 following operations are supported:
