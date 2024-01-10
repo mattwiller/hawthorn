@@ -20,4 +20,4 @@ go.work
 # Project-specific files
 hawthorn
 umls.db
-umls*.zip
+/*.zip
