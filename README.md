@@ -37,7 +37,7 @@ the service as a sidecar. The benchmark was performed using [K6](https://k6.io/)
 for more details.
 
 <details>
-<summary><strong>tl;dr</strong> Served over 6,000 code lookups per second, with p99 latency under 0.5 ms and p99.99 latency under 5 ms</summary>
+<summary><strong>tl;dr</strong> Served 6,500+ code lookups per second, with p99 latency <0.5 ms and p99.99 latency &lt;5 ms</summary>
 
 ```
 > k6 run --duration 7m --summary-trend-stats 'avg,min,med,p(75),p(90),p(95),p(99),p(99.9),p(99.99),max' k6.js
