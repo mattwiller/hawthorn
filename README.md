@@ -13,7 +13,7 @@ for access to the underlying UMLS terminology data, and typically takes 1-3 days
 After receiving access to UMLS Metathesaurus, [your UMLS profile](https://uts.nlm.nih.gov/uts/edit-profile) contains the
 API key needed for setting up the service.
 
-After cloning the repository, build the service as a Docker container:
+Clone this repository, then build the service as a Docker container:
 
 > **NOTE:** This will download the entire ~4 GB UMLS metathesaurus release, and run a build script to extract the
 > code system data from the compressed file.
