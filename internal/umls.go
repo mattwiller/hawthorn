@@ -358,59 +358,81 @@ func ParseConcept(row []byte) Concept {
 }
 
 func LoadConcepts(db *DB, file io.Reader) (map[string]*Concept, error) {
-	scan := bufio.NewScanner(file)
-	n := 0
-	codings := make(map[string]int, 8)
+    scan := bufio.NewScanner(file)
+    n := 0
+    codings := make(map[string]int, 8)
 
-	fmt.Println("Loading concepts:")
-	var concepts = make(map[string]*Concept, 2^20)
-	db.Batch()
-	for scan.Scan() {
-		line := scan.Bytes()
-		concept := ParseConcept(line)
-		source, ok := umlsSources[concept.SAB]
-		if !ok || concept.LAT != "ENG" || concept.SUPPRESS != "N" {
-			continue
-		} else if !slices.Contains(source.tty, concept.TTY) {
-			continue
-		}
+    fmt.Println("Loading concepts:")
+    var concepts = make(map[string]*Concept, 2^20)
 
-		key := concept.SAB + "|" + concept.CODE
-		if ex, exists := concepts[key]; exists {
-			if slices.Index(source.tty, concept.TTY) >= slices.Index(source.tty, ex.TTY) {
-				continue
-			}
-		} else {
-			codings[concept.SAB]++
-		}
+    // Obtain a connection from the pool at the start of the function
+    conn, err := db.GetConnection()
+    if err != nil {
+        return nil, fmt.Errorf("failed to get database connection: %w", err)
+    }
+    defer db.PutConnection(conn) // Ensure to return the connection back to the pool at the end
 
-		results, err := db.Query(`INSERT INTO "Coding" (system, code, display) VALUES ($1, $2, $3) ON CONFLICT (system, code) DO UPDATE SET display = EXCLUDED.display RETURNING id`, source.resource.dbID, concept.CODE, concept.STR)
-		if err != nil {
-			panic(err)
-		}
+    // Start the transaction
+    if err := db.Batch(conn); err != nil {
+        return nil, fmt.Errorf("failed to start batch operation: %w", err)
+    }
 
-		concept.dbID = results[0]["id"].(int64)
-		concepts[concept.AUI] = &concept
-		concepts[key] = &concept
+    for scan.Scan() {
+        line := scan.Bytes()
+        concept := ParseConcept(line)
+        source, ok := umlsSources[concept.SAB]
+        if !ok || concept.LAT != "ENG" || concept.SUPPRESS != "N" {
+            continue
+        } else if !slices.Contains(source.tty, concept.TTY) {
+            continue
+        }
 
-		n++
-		if n%500 == 0 {
-			db.Flush()
-			fmt.Print(".")
-			db.Batch()
-		}
-	}
-	db.Flush()
+        key := concept.SAB + "|" + concept.CODE
+        if ex, exists := concepts[key]; exists {
+            if slices.Index(source.tty, concept.TTY) >= slices.Index(source.tty, ex.TTY) {
+                continue
+            }
+        } else {
+            codings[concept.SAB]++
+        }
 
-	fmt.Println("✅")
-	fmt.Printf("Processed %d rows\n======================\n", n)
-	total := 0
-	for system, codes := range codings {
-		total += codes
-		fmt.Printf("%s: %d\n", system, codes)
-	}
-	fmt.Printf("======================\n(total %d unique concepts)\n\n", total)
-	return concepts, nil
+        // Ensure to use the obtained connection for the query
+        results, err := db.QueryWithConnection(conn, `INSERT INTO "Coding" (system, code, display) VALUES ($1, $2, $3) ON CONFLICT (system, code) DO UPDATE SET display = EXCLUDED.display RETURNING id`, source.resource.dbID, concept.CODE, concept.STR)
+        if err != nil {
+            return nil, fmt.Errorf("failed to insert coding: %w", err)
+        }
+
+        concept.dbID = results[0]["id"].(int64)
+        concepts[concept.AUI] = &concept
+        concepts[key] = &concept
+
+        n++
+        if n%500 == 0 {
+            // Flush and start a new batch using the same connection
+            if err := db.Flush(conn); err != nil {
+                return nil, fmt.Errorf("failed to flush batch operation: %w", err)
+            }
+            if err := db.Batch(conn); err != nil {
+                return nil, fmt.Errorf("failed to start new batch operation: %w", err)
+            }
+            fmt.Print(".")
+        }
+    }
+
+    // Final flush to commit any remaining operations
+    if err := db.Flush(conn); err != nil {
+        return nil, fmt.Errorf("failed to finalize batch operation: %w", err)
+    }
+
+    fmt.Println("✅")
+    fmt.Printf("Processed %d rows\n======================\n", n)
+    total := 0
+    for system, codes := range codings {
+        total += codes
+        fmt.Printf("%s: %d\n", system, codes)
+    }
+    fmt.Printf("======================\n(total %d unique concepts)\n\n", total)
+    return concepts, nil
 }
 
 func MapProperties(file io.Reader) map[string]string {
@@ -539,59 +561,76 @@ var mappedProperties = map[string]string{
 }
 
 func LoadProperties(db *DB, concepts map[string]*Concept, file io.Reader) error {
-	scan := bufio.NewScanner(file)
-	n := 0
-	propertyCounts := make(map[string]int, 64)
+    scan := bufio.NewScanner(file)
+    n := 0
+    propertyCounts := make(map[string]int, 64)
 
-	fmt.Println("Loading properties:")
-	db.Batch()
-	for scan.Scan() {
-		line := scan.Bytes()
-		attribute := ParseAttribute(line)
-		source, ok := umlsSources[attribute.SAB]
-		if !ok || attribute.SUPPRESS != "N" {
-			continue
-		}
+    fmt.Println("Loading properties:")
+    
+    conn, err := db.GetConnection()
+    if err != nil {
+        return fmt.Errorf("failed to get database connection: %w", err)
+    }
+    defer db.PutConnection(conn) 
 
-		property := source.resource.GetProperty(attribute.ATN)
-		if property == nil {
-			continue
-		}
-		if property.dbID == 0 {
-			results, err := db.Query(`INSERT INTO "CodeSystem_Property" (system, code, type, uri, description) VALUES ($1, $2, $3, $4, $5) RETURNING id`, source.resource.dbID, property.Code, property.Type, property.Uri, property.Description)
-			if err != nil {
-				return err
-			}
-			property.dbID = results[0]["id"].(int64)
-		}
+	if err := db.Batch(conn); err != nil {
+        return fmt.Errorf("failed to start batch operation: %w", err)
+    }
 
-		concept := concepts[attribute.SAB+"|"+attribute.CODE]
-		if concept == nil {
-			panic("Unknown code: " + attribute.SAB + "|" + attribute.CODE)
-		}
+    for scan.Scan() {
+        line := scan.Bytes()
+        attribute := ParseAttribute(line)
+        source, ok := umlsSources[attribute.SAB]
+        if !ok || attribute.SUPPRESS != "N" {
+            continue
+        }
 
-		_, err := db.Query(`INSERT INTO "Coding_Property" (coding, property, value) VALUES ($1, $2, $3)`, concept.dbID, property.dbID, attribute.ATV)
-		if err != nil {
-			return err
-		}
+        property := source.resource.GetProperty(attribute.ATN)
+        if property == nil {
+            continue
+        }
+        if property.dbID == 0 {
+            results, err := db.QueryWithConnection(conn, `INSERT INTO "CodeSystem_Property" (system, code, type, uri, description) VALUES ($1, $2, $3, $4, $5) RETURNING id`, source.resource.dbID, property.Code, property.Type, property.Uri, property.Description)
+            if err != nil {
+                return fmt.Errorf("failed to insert code system property: %w", err)
+            }
+            property.dbID = results[0]["id"].(int64)
+        }
 
-		propertyCounts[attribute.SAB+"|"+attribute.ATN]++
-		n++
+        concept := concepts[attribute.SAB+"|"+attribute.CODE]
+        if concept == nil {
+            return fmt.Errorf("unknown code: %s|%s", attribute.SAB, attribute.CODE)
+        }
 
-		if n%500 == 0 {
-			db.Flush()
-			fmt.Print(".")
-			db.Batch()
-		}
-	}
-	db.Flush()
+        _, err = db.QueryWithConnection(conn, `INSERT INTO "Coding_Property" (coding, property, value) VALUES ($1, $2, $3)`, concept.dbID, property.dbID, attribute.ATV)
+        if err != nil {
+            return fmt.Errorf("failed to insert coding property: %w", err)
+        }
 
-	fmt.Println("✅")
-	for property, count := range propertyCounts {
-		fmt.Printf("%s: %d\n", property, count)
-	}
-	fmt.Printf("======================\n(total %d properties)\n\n", n)
-	return nil
+        propertyCounts[attribute.SAB+"|"+attribute.ATN]++
+        n++
+
+        if n%500 == 0 {
+            if err := db.Flush(conn); err != nil {
+                return fmt.Errorf("failed to flush batch operation: %w", err)
+            }
+            if err := db.Batch(conn); err != nil {
+                return fmt.Errorf("failed to start new batch operation: %w", err)
+            }
+            fmt.Print(".")
+        }
+    }
+
+    if err := db.Flush(conn); err != nil {
+        return fmt.Errorf("failed to finalize batch operation: %w", err)
+    }
+
+    fmt.Println("✅")
+    for property, count := range propertyCounts {
+        fmt.Printf("%s: %d\n", property, count)
+    }
+    fmt.Printf("======================\n(total %d properties)\n\n", n)
+    return nil
 }
 
 // Represents a relationship between two UMLS Concepts.
@@ -683,87 +722,104 @@ const PARENT_URI = "http://hl7.org/fhir/concept-properties#parent"
 const CHILD_URI = "http://hl7.org/fhir/concept-properties#child"
 
 func LoadRelationships(db *DB, concepts map[string]*Concept, relationshipProperties map[string]string, file io.Reader) error {
-	scan := bufio.NewScanner(file)
-	n := 0
-	propertyCounts := make(map[string]int, 64)
+    scan := bufio.NewScanner(file)
+    n := 0
+    propertyCounts := make(map[string]int, 64)
 
-	fmt.Println("Loading relationships:")
-	db.Batch()
-	for scan.Scan() {
-		line := scan.Bytes()
-		relationship := ParseRelationship(line)
-		source, ok := umlsSources[relationship.SAB]
-		if !ok || relationship.SUPPRESS != "N" {
-			continue
-		}
+    fmt.Println("Loading relationships:")
+    
+    conn, err := db.GetConnection()
+    if err != nil {
+        return fmt.Errorf("failed to get database connection: %w", err)
+    }
+    defer db.PutConnection(conn)
 
-		mappedRelationshipProperty := relationshipProperties[relationship.SAB+"/"+relationship.REL+"/"+relationship.RELA]
-		var propertyName string
-		var property CodeSystemProperty
-		if mappedRelationshipProperty != "" {
-			propertyName = mappedRelationshipProperty
-			for _, p := range source.resource.Property {
-				if p.Code == propertyName {
-					property = p
-					break
-				}
-			}
-		} else if relationship.REL == "PAR" {
-			for _, p := range source.resource.Property {
-				if p.Uri == PARENT_URI {
-					propertyName = p.Code
-					property = p
-					break
-				}
-			}
-		} else if relationship.REL == "CHD" {
-			for _, p := range source.resource.Property {
-				if p.Uri == CHILD_URI {
-					propertyName = p.Code
-					property = p
-					break
-				}
-			}
-		}
-		if propertyName == "" {
-			continue
-		}
-		if property.dbID == 0 {
-			results, err := db.Query(`INSERT INTO "CodeSystem_Property" (system, code, type, uri, description) VALUES ($1, $2, $3, $4, $5) RETURNING id`, source.resource.dbID, property.Code, property.Type, property.Uri, property.Description)
-			if err != nil {
-				return err
-			}
-			property.dbID = results[0]["id"].(int64)
-		}
+    if err := db.Batch(conn); err != nil {
+        return fmt.Errorf("failed to start batch operation: %w", err)
+    }
 
-		srcConcept := concepts[relationship.AUI1]
-		dstConcept := concepts[relationship.AUI2]
-		if srcConcept == nil || dstConcept == nil {
-			continue
-		}
+    for scan.Scan() {
+        line := scan.Bytes()
+        relationship := ParseRelationship(line)
+        source, ok := umlsSources[relationship.SAB]
+        if !ok || relationship.SUPPRESS != "N" {
+            continue
+        }
 
-		key := fmt.Sprintf(`%s|%s (%s/%s)`, source.resource.Url, propertyName, relationship.REL, relationship.RELA)
+        mappedRelationshipProperty := relationshipProperties[relationship.SAB+"/"+relationship.REL+"/"+relationship.RELA]
+        var propertyName string
+        var property CodeSystemProperty
+        if mappedRelationshipProperty != "" {
+            propertyName = mappedRelationshipProperty
+            for _, p := range source.resource.Property {
+                if p.Code == propertyName {
+                    property = p
+                    break
+                }
+            }
+        } else if relationship.REL == "PAR" {
+            for _, p := range source.resource.Property {
+                if p.Uri == PARENT_URI {
+                    propertyName = p.Code
+                    property = p
+                    break
+                }
+            }
+        } else if relationship.REL == "CHD" {
+            for _, p := range source.resource.Property {
+                if p.Uri == CHILD_URI {
+                    propertyName = p.Code
+                    property = p
+                    break
+                }
+            }
+        }
+        if propertyName == "" {
+            continue
+        }
+        if property.dbID == 0 {
+            results, err := db.QueryWithConnection(conn, `INSERT INTO "CodeSystem_Property" (system, code, type, uri, description) VALUES ($1, $2, $3, $4, $5) RETURNING id`, source.resource.dbID, property.Code, property.Type, property.Uri, property.Description)
+            if err != nil {
+                return fmt.Errorf("failed to insert code system property: %w", err)
+            }
+            property.dbID = results[0]["id"].(int64)
+        }
 
-		_, err := db.Query(`INSERT INTO "Coding_Property" (coding, property, target, value) VALUES ($1, $2, $3, $4)`, srcConcept.dbID, property.dbID, dstConcept.dbID, dstConcept.CODE)
-		if err != nil {
-			return err
-		}
+        srcConcept := concepts[relationship.AUI1]
+        dstConcept := concepts[relationship.AUI2]
+        if srcConcept == nil || dstConcept == nil {
+            continue
+        }
 
-		propertyCounts[key]++
-		n++
+        key := fmt.Sprintf(`%s|%s (%s/%s)`, source.resource.Url, propertyName, relationship.REL, relationship.RELA)
 
-		if n%500 == 0 {
-			db.Flush()
-			fmt.Print(".")
-			db.Batch()
-		}
-	}
-	db.Flush()
+        _, err = db.QueryWithConnection(conn, `INSERT INTO "Coding_Property" (coding, property, target, value) VALUES ($1, $2, $3, $4)`, srcConcept.dbID, property.dbID, dstConcept.dbID, dstConcept.CODE)
+        if err != nil {
+            return fmt.Errorf("failed to insert coding property: %w", err)
+        }
 
-	fmt.Println("✅")
-	for property, count := range propertyCounts {
-		fmt.Printf("%s: %d\n", property, count)
-	}
-	fmt.Printf("======================\n(total %d relationships)\n\n", n)
-	return nil
+        propertyCounts[key]++
+        n++
+
+        if n%500 == 0 {
+            if err := db.Flush(conn); err != nil {
+                return fmt.Errorf("failed to flush batch operation: %w", err)
+            }
+            if err := db.Batch(conn); err != nil {
+                return fmt.Errorf("failed to start new batch operation: %w", err)
+            }
+            fmt.Print(".")
+        }
+    }
+
+    if err := db.Flush(conn); err != nil {
+        return fmt.Errorf("failed to finalize batch operation: %w", err)
+    }
+
+    fmt.Println("✅")
+    for property, count := range propertyCounts {
+        fmt.Printf("%s: %d\n", property, count)
+    }
+    fmt.Printf("======================\n(total %d relationships)\n\n", n)
+    return nil
 }

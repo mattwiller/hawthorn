@@ -1010,7 +1010,7 @@ export default function () {
   const n = Math.floor(Math.random() * 1000)
   const code = codes[n] || codes[0];
   const test = testData[code];
-
+  
   let res = http.get("http://localhost:29927/R4/CodeSystem/$lookup?system=http://snomed.info/sct&code=" + code);
 
   // Validate response
