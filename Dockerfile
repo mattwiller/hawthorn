@@ -5,6 +5,9 @@ ARG UMLS_API_KEY
 WORKDIR /app
 COPY . .
 
+# Copy the UMLS ZIP file if it exists
+COPY umls-2023AB-full.zip ./
+
 RUN apk add --no-cache make curl
 RUN make build
 
